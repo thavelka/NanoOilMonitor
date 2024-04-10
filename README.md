@@ -1,6 +1,8 @@
 # NanoOilMonitor
 Sketch to monitor oil temp and pressure and write to 128x64 display
 
+https://github.com/thavelka/NanoOilMonitor/assets/8907132/da23afdf-3d59-4e5f-9234-c822fb60fd93
+
 # Components
 * [1.3 in SPI OLED](https://www.microcenter.com/product/643965/inland-iic-spi-13-128x64-oled-v20-graphic-display-module-for-arduino-uno-r3) ($8)
 * [Arduino Nano](https://www.microcenter.com/product/615097/inland-nano-development-board-arduino-compatible) ($5-10)
