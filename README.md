@@ -4,8 +4,8 @@ Sketch to monitor oil temp and pressure and write to 128x64 display
 # Components
 * [1.3 in SPI OLED](https://www.microcenter.com/product/643965/inland-iic-spi-13-128x64-oled-v20-graphic-display-module-for-arduino-uno-r3) ($8)
 * [Arduino Nano](https://www.microcenter.com/product/615097/inland-nano-development-board-arduino-compatible) ($5-10)
-* [NTC Temp Sensor](https://www.mlperformanceusa.com/products/canchecked-cc22902-ntc-temperature-sensor-1-8-npt-thread-for-oil-water) ($30)
-* [5v pressure sensor](https://www.amazon.com/Universal-Pressure-Transducer-Sender-Connector/dp/B09VRDM71G) ($16)
+* [NTC Temp Sensor](https://www.mlperformanceusa.com/products/canchecked-cc22902-ntc-temperature-sensor-1-8-npt-thread-for-oil-water) ($30, get a good one)
+* [5v pressure Sensor](https://www.amazon.com/Universal-Pressure-Transducer-Sender-Connector/dp/B09VRDM71G) ($16)
 * Momentary push button (for mode select)
 * 5v source (e.g. USB or voltage regulator)
 
@@ -32,6 +32,15 @@ Display CS: A0
 Display DC: A1  
 Display RES: A2
 ```
+
+# Usage
+Press button to cycle mode
+#### Modes
+1. Standby (default) - Display for 10 seconds then go dark unless alert thresholds exceeded.
+2. Unit - Display temp in degrees F and pressure in PSI
+3. Idiot light - Display temp ranges (COLD, COOL, OK, HOT), pressure ranges (ALERT, LOW, OK, HIGH).
+
+# Photos
 ![PXL_20231220_221435072](https://github.com/thavelka/NanoOilMonitor/assets/8907132/9d96a823-0542-44d6-9151-d9b6e78d09e3)
 
 
