@@ -43,8 +43,10 @@ Press button to cycle mode
 # Photos
 ![PXL_20231220_221435072](https://github.com/thavelka/NanoOilMonitor/assets/8907132/9d96a823-0542-44d6-9151-d9b6e78d09e3)
 
-
 ![PXL_20231220_041108299](https://github.com/thavelka/NanoOilMonitor/assets/8907132/aa5d515f-0b29-4a54-a31a-ff45861646f5)
 
-
 ![PXL_20231219_033741559](https://github.com/thavelka/NanoOilMonitor/assets/8907132/aa55d550-5427-4ae7-84f1-3d83e92c2a1c)
+
+# Credit
+* Display housing: https://www.thingiverse.com/thing:4680559
+* Display lib: https://github.com/olikraus/u8g2
