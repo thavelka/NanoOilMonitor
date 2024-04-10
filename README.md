@@ -6,8 +6,8 @@ Sketch to monitor oil temp and pressure and write to 128x64 display
 * [Arduino Nano](https://www.microcenter.com/product/615097/inland-nano-development-board-arduino-compatible) ($5-10)
 * [NTC Temp Sensor](https://www.mlperformanceusa.com/products/canchecked-cc22902-ntc-temperature-sensor-1-8-npt-thread-for-oil-water) ($30, get a good one)
 * [5v pressure Sensor](https://www.amazon.com/Universal-Pressure-Transducer-Sender-Connector/dp/B09VRDM71G) ($16)
-* Momentary push button (for mode select)
-* 5v source (e.g. USB or voltage regulator)
+* [Momentary push button](https://www.amazon.com/Cylewet-Momentary-Button-Switch-CYT1078/dp/B0752RMB7Q) (for mode select)
+* 5v source (e.g. Dashcam hardwire kit or voltage regulator)
 
 # Hookup
 ```
