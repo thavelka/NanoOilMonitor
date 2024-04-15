@@ -10,8 +10,8 @@ I am using this in a 2016 Mazda MX-5. You can use this in any vehicle with provi
 Recommended temperatures and pressures may be different for your vehicle. Check your factory service manual for the correct values and update the constants in the sketch.
 
 # Components
-* [1.3 in SPI OLED](https://www.microcenter.com/product/643965/inland-iic-spi-13-128x64-oled-v20-graphic-display-module-for-arduino-uno-r3) ($8)
-* [Arduino Nano](https://www.microcenter.com/product/615097/inland-nano-development-board-arduino-compatible) ($5-10)
+* [1.3 in SPI OLED](https://www.microcenter.com/product/643965/inland-iic-spi-13-128x64-oled-v20-graphic-display-module-for-arduino-uno-r3) (~$8 from MC or Amazon)
+* [Arduino Nano](https://www.microcenter.com/product/615097/inland-nano-development-board-arduino-compatible) ($5-10 from MC or Amazon)
 * [NTC Temp Sensor](https://www.mlperformanceusa.com/products/canchecked-cc22902-ntc-temperature-sensor-1-8-npt-thread-for-oil-water) ($30, get a good one)
 * [5v pressure Sensor](https://www.amazon.com/Universal-Pressure-Transducer-Sender-Connector/dp/B09VRDM71G) ($16)
 * [Momentary push button](https://www.amazon.com/Cylewet-Momentary-Button-Switch-CYT1078/dp/B0752RMB7Q) (for mode select)
