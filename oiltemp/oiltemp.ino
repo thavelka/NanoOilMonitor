@@ -13,23 +13,42 @@ const int res = A2;
 const int DC = A1;
 const int CS = A0;
 
-// Constants
+//============================================================================
+// Constants - configure for your vehicle and sensors
+//============================================================================
 const bool demoMode = false; // Set true to sweep values
+
 const long tempPullUpOhms = 1000;
-const long maxAnalogVal = 1024;
+const long maxAnalogVal = 1024; // Highest possible value from analog input
+
+// Temp sensor config, map temp in C to expected ohms, from datasheet
 const int arrSize = 12;
 const int temps[12] = {40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150}; // In deg C
-const int thresholds[12] = {925, 630, 438, 315, 224, 163, 120, 90, 80, 70, 50, 40}; // In ohms, from datasheet
-const int pressureBaseVal = 102; // of 1024
-const int pressureMaxVal = 922; // of 1024
+const int thresholds[12] = {925, 630, 438, 315, 224, 163, 120, 90, 80, 70, 50, 40}; // In ohms
+
+// Pressure sensor config, from datasheet
+const int pressureBaseVal = 102; // Analog value at 0 PSI (0.5 V)
+const int pressureMaxVal = 922; // Analog value at max pressure (4.5 V)
 const int pressureMaxPsi = 150; // Pressure in PSI at pressureMaxVal
-const int reportIntervalMillis = 1000; // How often the values on screen should update under nominal conditions
+
+// Display config
+const int reportIntervalMillis = 1000; // How often the screen should update under nominal conditions
 const int standbyMillis = 10000; // Go blank after this time unless alert
-const int tempHighAlertF = 280; // "HOT" flashes above this temp
-const int tempCoolF = 150; // "Cool" shown below this temp
-const int tempColdF = 104; // "Cold" shown below this temp
-const int pressureAlertLowPsi = 20; // "ALERT" flashes below this value
 const int clickDebounceMillis = 500;
+
+// Temp alert preferences
+const int tempColdF = 104; // "Cold" shown below this temp
+const int tempCoolF = 150; // "Cool" shown below this temp
+const int tempHighAlertF = 280; // "HOT" flashes above this temp
+
+// Pressure alert preferences
+const int pressureLowAlertPsi = 15; // "ALERT" flashes below this value
+const int pressureLowPsi = 35; // "LOW" shown below this value
+const int pressureHighPsi = 90; // "HIGH" shown above this value
+
+//============================================================================
+// End Constants
+//============================================================================
 
 // Mode variables
 enum Mode {STANDBY, UNITF, IDIOT};
@@ -41,9 +60,6 @@ bool alerting = false;
 // Sample data buffers
 int tempSamples[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 int currTempSampleIndex = 0;
-
-int pressureSamples[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-int currPressureSampleIndex = 0;
 
 // Configure display for 4 wire SPI
 U8G2_SH1106_128X64_NONAME_F_4W_HW_SPI u8g2(U8G2_R0, /* cs=*/ CS, /* dc=*/ DC, /* reset=*/ res);
@@ -58,7 +74,6 @@ void setup() {
 
   // Fill buffers with initial data
   initTempSample();
-  initPressureSample();
 }
 
 void loop() {
@@ -154,21 +169,6 @@ int getSpotAveragePressureValue() {
   return sum / 10;
 }
 
-/** Update one value of pressure sample buffer with most recent spot average */
-void samplePressure() {
-  int pressureValue = getSpotAveragePressureValue();
-  pressureSamples[currPressureSampleIndex] = pressureValue;
-  currPressureSampleIndex = (currPressureSampleIndex + 1) % 10;
-}
-
-/** Fill pressure sample buffer */
-void initPressureSample() {
-  samplePressure();
-  while (currPressureSampleIndex != 0) {
-    samplePressure();
-  }
-}
-
 void clearScreen() {
   u8g2.firstPage();
   do {} while ( u8g2.nextPage() );
@@ -183,7 +183,7 @@ void drawStandbyMode(int temp, int pressure) {
   }
 }
 
-void drawUnitText(int temp, int pressure) {
+void drawUnitText(int tempF, int pressurePsi) {
   u8g2.firstPage();
   do {
     u8g2.setFont(u8g2_font_fub20_tr);
@@ -191,11 +191,11 @@ void drawUnitText(int temp, int pressure) {
     // Print temp
     u8g2.setCursor(0, 32);
     u8g2.print("T: ");
-    if (temp < 104) {
-       u8g2.print("COLD");  
-    } else if (temp < tempHighAlertF || (millis()/100) % 2 == 0) { // Flash alert if not nominal
+    if (tempF < cToF(temps[0])) {
+       u8g2.print("COLD"); // Show COLD below minimum value
+    } else if (tempF < tempHighAlertF || (millis() / 100) % 2 == 0) { // Flash alert if not nominal
       char str[32];
-      snprintf(str, 32, "%d F", (int)temp);
+      snprintf(str, 32, "%d F", (int)tempF);
       u8g2.print(str);
     }
 
@@ -203,15 +203,15 @@ void drawUnitText(int temp, int pressure) {
     u8g2.setCursor(0, 60);
     u8g2.print("P: ");
     
-    if (pressure > pressureAlertLowPsi || (millis()/100) % 2 == 0) { // Flash alert if not nominal
-        u8g2.print(pressure);
+    if (pressurePsi > pressureLowAlertPsi || (millis() / 100) % 2 == 0) { // Flash alert if not nominal
+        u8g2.print(pressurePsi);
         u8g2.print(" PSI"); 
     }
     
   } while ( u8g2.nextPage() );
 }
 
-void drawIdiotText(int temp, int pressure) {
+void drawIdiotText(int tempF, int pressurePsi) {
   u8g2.firstPage();
   do {
     u8g2.setFont(u8g2_font_fub20_tr);
@@ -219,13 +219,13 @@ void drawIdiotText(int temp, int pressure) {
     // Print temp
     u8g2.setCursor(0, 32);
     u8g2.print("T: ");
-    if (temp < tempColdF) {
+    if (tempF < tempColdF) {
       u8g2.print("COLD");  
-    } else if (temp < tempCoolF) {
+    } else if (tempF < tempCoolF) {
       u8g2.print("COOL");
-    } else if (temp >= tempHighAlertF) {
+    } else if (tempF >= tempHighAlertF) {
       // Flash alert
-      if ((millis()/100) % 2 == 0) {
+      if ((millis() / 100) % 2 == 0) {
         u8g2.print("HOT");  
       }
     } else {
@@ -235,14 +235,14 @@ void drawIdiotText(int temp, int pressure) {
   // Print pressure
     u8g2.setCursor(0, 60);
     u8g2.print("P: ");
-    if (pressure < pressureAlertLowPsi) {
+    if (pressurePsi < pressureLowAlertPsi) {
       // Flash alert
-      if ((millis()/100) % 2 == 0) {
+      if ((millis() / 100) % 2 == 0) {
         u8g2.print("ALERT");  
       }
-    } else if (pressure < 40) {
+    } else if (pressurePsi < pressureLowPsi) {
       u8g2.print("LOW");  
-    } else if (pressure > 80) {
+    } else if (pressurePsi > pressureHighPsi) {
       u8g2.print("HIGH");
     } else {
       u8g2.print("OK");
@@ -280,7 +280,7 @@ int getTempC(float ohms) {
     }
   }
   
-  return 150; // Max temp
+  return temps[arrSize - 1]; // Max temp
 }
 
 /** Convert analog pressure value (out of 1024) to PSI */
@@ -314,5 +314,5 @@ void switchMode() {
 
 /** Returns true if temp exceeds alert threshold or pressure falls below alert threshold */
 bool isAlert(int tempF, int pressurePsi) {
-  return tempF > tempHighAlertF || pressurePsi < pressureAlertLowPsi;
+  return tempF > tempHighAlertF || pressurePsi < pressureLowAlertPsi;
 }
