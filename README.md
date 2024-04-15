@@ -55,7 +55,8 @@ Press button to cycle mode
 3. Idiot light - Display temp ranges (COLD, COOL, OK, HOT), pressure ranges (ALERT, LOW, OK, HIGH).
 
 # Improvements
-You could compact this into just the display housing if you used an ATTiny and moved the voltage regulation outside the unit. You would want to use an I2C display instead of SPI.
+* You could compact this into just the display housing if you used an ATTiny and moved the voltage regulation outside the unit. You would want to use an I2C display instead of SPI.
+* I used screw terminal blocks for this prototype since I had them, but I would recommend JST connectors or soldering instead for motorsports usage.
 
 # Photos
 ![PXL_20231220_221435072](https://github.com/thavelka/NanoOilMonitor/assets/8907132/9d96a823-0542-44d6-9151-d9b6e78d09e3)
