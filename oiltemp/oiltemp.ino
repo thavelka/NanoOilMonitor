@@ -29,7 +29,7 @@ const int thresholds[12] = {925, 630, 438, 315, 224, 163, 120, 90, 80, 70, 50, 4
 // Pressure sensor config, from datasheet
 const int pressureBaseVal = 102; // Analog value at 0 PSI (0.5 V)
 const int pressureMaxVal = 922; // Analog value at max pressure (4.5 V)
-const int pressureMaxPsi = 150; // Pressure in PSI at pressureMaxVal
+const int pressureMaxPsi = 100; // Pressure in PSI at pressureMaxVal
 
 // Display config
 const int reportIntervalMillis = 1000; // How often the screen should update under nominal conditions
@@ -44,14 +44,14 @@ const int tempHighAlertF = 280; // "HOT" flashes above this temp
 // Pressure alert preferences
 const int pressureLowAlertPsi = 15; // "ALERT" flashes below this value
 const int pressureLowPsi = 35; // "LOW" shown below this value
-const int pressureHighPsi = 90; // "HIGH" shown above this value
+const int pressureHighPsi = 85; // "HIGH" shown above this value
 
 //============================================================================
 // End Constants
 //============================================================================
 
 // Mode variables
-enum Mode {STANDBY, UNITF, IDIOT};
+enum Mode {STANDBY, UNITF, IDIOT, RAW};
 int mode = STANDBY; // initial mode
 long lastClickTimeMillis = 0;
 long lastReportTimeMillis = 0;
@@ -104,6 +104,9 @@ void processData() {
       break;
     case IDIOT:
       drawIdiotText(tempF, pressurePsi);
+      break;
+    case RAW:
+      drawRawText();
       break;
   }
 }
@@ -247,6 +250,24 @@ void drawIdiotText(int tempF, int pressurePsi) {
     } else {
       u8g2.print("OK");
     }
+  } while ( u8g2.nextPage() );
+}
+
+void drawRawText() {
+  u8g2.firstPage();
+  do {
+    u8g2.setFont(u8g2_font_fub20_tr);
+    
+    // Print temp
+    u8g2.setCursor(0, 32);
+    u8g2.print("T: ");
+    u8g2.print(getSpotAverageTempValue());
+
+    // Print pressure
+    u8g2.setCursor(0, 60);
+    u8g2.print("P: ");
+    u8g2.print(getSpotAveragePressureValue());
+    
   } while ( u8g2.nextPage() );
 }
 
